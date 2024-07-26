@@ -1,14 +1,13 @@
 {
     "name": "AssistantUI",
     "slug": "AssistantUI",
-    "expo": {
-        "plugins": [
-            [
-                "expo-calendar",
-                {
-                    "calendarPermission": "The app needs to access your calendar."
-                }
-            ]
+    "plugins": [
+        [
+            "expo-calendar",
+            {
+                "calendarPermission": "The app needs to access your calendar."
+            }
         ]
-    }
+    ]
+
 }
