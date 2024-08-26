@@ -45,7 +45,7 @@ export async function InsertarChat(MensajeChat, UserChat, db) {
 export async function LeerChat(db) {
     //Para UsuarioChat 1 = Usuario 0=ChatGPT
     const messages = await SelectTablaCompleta('ChatMensajes', db, 'DESC');
-    console.log('Mensajes en la base de datos:', messages);
+    //console.log('Mensajes en la base de datos:', messages);
     return messages
 }
 
