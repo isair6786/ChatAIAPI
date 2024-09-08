@@ -2,12 +2,10 @@ import { Text, TextInput, View,TouchableOpacity,ActivityIndicator,Image } from '
 import { useState,useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Animated,{ FadeInUp } from 'react-native-reanimated';
-import {GoogleLogin, LoginEmailPassword,handleFirebaseError,GoogleLoginButton} from '../../services/Firebase/FirebaseFunctions';
+import {LoginEmailPassword,handleFirebaseError} from '../../services/Firebase/FirebaseFunctions';
 import { ValidateEmail } from '../../Functions/FormFunctions';
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../services/Firebase/FirebaseConfig';
-import google from '../../assets/images/google.png'
-import microsoft from '../../assets/images/microsoft.png'
 
 async function LoginFirebase(navigation,user,password) {
 
@@ -81,11 +79,6 @@ export default function LoginScreen ({navigation}) {
        return (form.password!==''&&form.email.text!==''&&form.isError!==true);
     }
     
-    const onHandleGoogle = ()=>{
-        console.log('aca Vamos')
-        GoogleLogin()
-     }
-
     if (loading) {
         // Mostrar un indicador de carga mientras verificamos el estado de autenticación
         return (
@@ -171,11 +164,9 @@ export default function LoginScreen ({navigation}) {
                         <View className="flex-1 border-t border-gray-300" />
                     </View>
                     <View className='flex-row justify-center space-x-4'>
-                        <GoogleLoginButton />
-                        <TouchableOpacity className='flex-row items-center justify-center p-3 rounded-2xl'>
-                            <Image source={microsoft} style={{ width: 40, height: 40 }} />
-                            
-                        </TouchableOpacity>
+                        
+                      
+
                     </View>
                 </View>
             </Animated.View>

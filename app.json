@@ -1,7 +1,7 @@
 {
-    "name": "AssistantUI",
+    "name": "assistantui",
     "slug": "assistantui",
-    "scheme": "com.AssistantUI.AssistantAI",
+    "scheme": "",
     "splash": {
         "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,17 @@
             }
         },
         "android": {
-            "package": "com.AssistantUI.AssistantAI"
+            "package": "com.AssistantUI.AssistantAI",
+            "android": {
+                "intentFilters": [{
+                    "action": "VIEW",
+                    "data": [{
+                        "scheme": "assistantui"
+                    }],
+                    "category": ["BROWSABLE", "DEFAULT"]
+                }]
+            }
+
         }
     }
 }
