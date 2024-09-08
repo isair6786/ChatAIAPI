@@ -1,7 +1,7 @@
 {
     "name": "assistantui",
     "slug": "assistantui",
-    "scheme": "",
+    "scheme": "assistantui",
     "splash": {
         "backgroundColor": "#ffffff"
     },
