@@ -66,6 +66,7 @@ export default function SignUpScreen({ navigation }) {
             await SignInEmailPassword(user, password);
             navigation.navigate('SuccessScreen');
         } catch (error) {
+            console.log(error)
             handleFirebaseError(error);
         }
     }
@@ -170,26 +171,7 @@ export default function SignUpScreen({ navigation }) {
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-            {/* Mensaje y botones de inicio de sesión con Google y Microsoft */}
-            <Animated.View entering={FadeInUp.delay(1000).duration(1000)} className='p-5'>
-                <View  className='items-center'>
-                    <View className="flex-row items-center justify-center my-4">
-                        <View className="flex-1 border-t border-gray-300" />
-                        <Text className="mx-3 text-gray-500 font-semibold">O regístrate con</Text>
-                        <View className="flex-1 border-t border-gray-300" />
-                    </View>
-                    <View className='flex-row justify-center space-x-4'>
-                        <TouchableOpacity className='flex-row items-center justify-center p-3 rounded-2xl'>
-                            <Image source={google} style={{ width: 50, height: 50 }} />
-                            
-                        </TouchableOpacity>
-                        <TouchableOpacity className='flex-row items-center justify-center p-3 rounded-2xl'>
-                            <Image source={microsoft} style={{ width: 40, height: 40 }} />
-                            
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Animated.View>
+           
         </View>
     );
 }

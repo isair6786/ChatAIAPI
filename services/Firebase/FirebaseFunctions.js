@@ -3,7 +3,9 @@ import { FIREBASE_AUTH } from "./FirebaseConfig";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    signOut
+    signInWithCredential,
+    signOut,
+    GoogleAuthProvider
 } from "firebase/auth";
 
 export async function LoginEmailPassword(user, password) {
@@ -18,6 +20,16 @@ export async function SignInEmailPassword(user, password) {
         user,
         password
     );
+    return UserLogin;
+}
+export async function LoginWithCredential(UserCredential) {
+    var UserLogin = "";
+    var credential = GoogleAuthProvider.credential(UserCredential.idToken, UserCredential.accessToken)
+    UserLogin = await signInWithCredential(
+        FIREBASE_AUTH,
+        credential
+    );
+    console.log(UserLogin)
     return UserLogin;
 }
 export function handleFirebaseError(error) {
@@ -47,7 +59,13 @@ export function handleFirebaseError(error) {
                 "Demasiados intentos fallidos. Por favor, inténtalo más tarde."
             );
             break;
-            // Agrega más casos según los códigos de error de Firebase que quieras manejar
+        case "auth/email-already-in-use":
+            Alert.alert(
+                "Error",
+                "Este correo ya esta siendo usado , intente con uno diferente"
+            );
+            break;
+
         default:
             Alert.alert(
                 "Error",

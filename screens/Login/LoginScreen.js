@@ -1,4 +1,4 @@
-import { Text, TextInput, View,TouchableOpacity,ActivityIndicator,Image } from 'react-native'
+import { Text, TextInput, View,TouchableOpacity,ActivityIndicator,Image, Linking } from 'react-native'
 import { useState,useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Animated,{ FadeInUp } from 'react-native-reanimated';
@@ -6,6 +6,11 @@ import {LoginEmailPassword,handleFirebaseError} from '../../services/Firebase/Fi
 import { ValidateEmail } from '../../Functions/FormFunctions';
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../services/Firebase/FirebaseConfig';
+import microsoft from '../../assets/images/microsoft.png'
+import google from '../../assets/images/google.png'
+
+
+
 
 async function LoginFirebase(navigation,user,password) {
 
@@ -78,6 +83,10 @@ export default function LoginScreen ({navigation}) {
        // console.log(form.password!==''&&form.email.text!==''&&form.isError!==true)
        return (form.password!==''&&form.email.text!==''&&form.isError!==true);
     }
+    const handlePress = async () => {
+        navigation.navigate('LoginWeb'); 
+    };
+      
     
     if (loading) {
         // Mostrar un indicador de carga mientras verificamos el estado de autenticación
@@ -164,9 +173,14 @@ export default function LoginScreen ({navigation}) {
                         <View className="flex-1 border-t border-gray-300" />
                     </View>
                     <View className='flex-row justify-center space-x-4'>
-                        
-                      
-
+                        <TouchableOpacity
+                        onPress={() => handlePress()}
+                        className='flex-row items-center justify-center p-3 rounded-2xl'
+                        >
+                            <Image source={microsoft} style={{ width: 40, height: 40,marginRight:20}} />
+                            <Image source={google} style={{ width: 50, height: 50 }} />
+                        </TouchableOpacity>
+                       
                     </View>
                 </View>
             </Animated.View>
