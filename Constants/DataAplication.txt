@@ -1,0 +1,6 @@
+Package: com.AssistantUI.AssistantAI
+android: 584122301418-j63fkarf1te13kqd5qdq5quac0aspdhd.apps.googleusercontent.com
+
+/*Para compilar en android*/
+agregar e la carpeta andriod el archivo local.properties con el valor
+sdk.dir=C:\\Users\\USER\\AppData\\Local\\Android\\Sdk
