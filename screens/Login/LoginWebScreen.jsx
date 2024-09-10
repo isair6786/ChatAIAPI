@@ -9,15 +9,11 @@ import { OAuthProvider}  from 'firebase/auth';
 
 export default function LoginWeb({ navigation }) {
  const OnHandleMessage=async (message)=>{
-    
    if(message.nativeEvent.data){
         var content = JSON.parse(message.nativeEvent.data)
-        console.log(content.mensaje)
-        //console.log(content.mensaje)
-        await LoginWithCredential(content.mensaje)
+        await LoginWithCredential(content.mensaje,content.mensaje.providerId?content.mensaje.providerId:'microsoft.com')
     }
-    //LoginWithToken(JSON.parse())
-    //navigation.navigate('/');
+    
  }
   const INJECTED_JAVASCRIPT = `
   window.ValidToken = (mensaje) => {

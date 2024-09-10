@@ -5,8 +5,10 @@ import {
     createUserWithEmailAndPassword,
     signInWithCredential,
     signOut,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    OAuthProvider,
 } from "firebase/auth";
+
 
 export async function LoginEmailPassword(user, password) {
     var UserLogin = "";
@@ -22,9 +24,15 @@ export async function SignInEmailPassword(user, password) {
     );
     return UserLogin;
 }
-export async function LoginWithCredential(UserCredential) {
+export async function LoginWithCredential(UserCredential, ProviderId) {
     var UserLogin = "";
-    var credential = GoogleAuthProvider.credential(UserCredential.idToken, UserCredential.accessToken)
+    var credential = "";
+    if (ProviderId === 'microsoft.com') {
+        var provider = new OAuthProvider('microsoft.com')
+        credential = OAuthProvider.credentialFromResult(UserCredential)
+    } else {
+        credential = GoogleAuthProvider.credential(UserCredential.idToken, UserCredential.accessToken)
+    }
     UserLogin = await signInWithCredential(
         FIREBASE_AUTH,
         credential
