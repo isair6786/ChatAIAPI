@@ -54,3 +54,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+services/Firebase/FirebaseConfig.js
