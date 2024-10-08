@@ -3,13 +3,13 @@ import axios from 'axios';
 
 export async function EnviarMensaje(context) {
     var data = {
-        contexto: JSON.stringify(context)
-    }
-    console.log(data)
+            contexto: JSON.stringify(context)
+        }
+        //console.log(data)
     var mensaje = '';
     try {
         const response = await axios.post(API_URL + "/send-message", data);
-        console.log('Respuesta del servidor:', response.data);
+        //console.log('Respuesta del servidor:', response.data);
         mensaje = response.data.responseMessage
     } catch (error) {
         if (error.response) {
@@ -30,7 +30,7 @@ export async function ValidarApi() {
     try {
         const response = await axios.get(API_URL);
         // Manejar la respuesta exitosa
-        console.log(response.data.responseMessage);
+        //(response.data.responseMessage);
         mensaje = response.data.responseMessage
     } catch (error) {
         // Manejar cualquier error

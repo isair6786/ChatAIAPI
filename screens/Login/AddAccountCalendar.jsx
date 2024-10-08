@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import { WebView } from 'react-native-webview';
 import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { LoginWithCredential } from '../../services/Firebase/FirebaseFunctions';
+import { AddAccountCalendar } from '../../services/Firebase/FirebaseFunctions';
 import { OAuthProvider}  from 'firebase/auth';
 import { URI_LOGIN } from "@env"
-export default function LoginWeb({ navigation }) {
+
+export default function AddAccountWeb({ navigation }) {
+
  const OnHandleMessage=async (message)=>{
    if(message.nativeEvent.data){
         var content = JSON.parse(message.nativeEvent.data)
-        await LoginWithCredential(content.mensaje,content.mensaje.providerId?content.mensaje.providerId:'microsoft.com')
+        console.log(content.mensaje)
+        await AddAccountCalendar(content.mensaje)
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Chat' }],
+      });  
     }
     
  }
@@ -19,6 +26,7 @@ export default function LoginWeb({ navigation }) {
   window.ValidToken = (mensaje) => {
     window.ReactNativeWebView.postMessage(JSON.stringify({ mensaje }));
   };
+  window.IsAddAccount = true;
 `;
   return (
     <WebView

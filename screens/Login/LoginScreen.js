@@ -30,7 +30,7 @@ export default function LoginScreen ({navigation}) {
     useEffect(() => {
       // Establecer el estado de autenticación
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
-        console.log(currentUser)
+        //console.log(currentUser)
         if (currentUser) {
             // El usuario ha iniciado sesión, redirigir a la pantalla de chat
             navigation.reset({

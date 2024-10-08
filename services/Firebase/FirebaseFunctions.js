@@ -8,6 +8,8 @@ import {
     GoogleAuthProvider,
     OAuthProvider,
 } from "firebase/auth";
+import { CreateDataUser } from "../database";
+
 
 
 export async function LoginEmailPassword(user, password) {
@@ -27,17 +29,21 @@ export async function SignInEmailPassword(user, password) {
 export async function LoginWithCredential(UserCredential, ProviderId) {
     var UserLogin = "";
     var credential = "";
+    var SignMethod = ""
     if (ProviderId === 'microsoft.com') {
+        SignMethod = 'microsoft'
         var provider = new OAuthProvider('microsoft.com')
         credential = OAuthProvider.credentialFromResult(UserCredential)
     } else {
+        SignMethod = 'google'
         credential = GoogleAuthProvider.credential(UserCredential.idToken, UserCredential.accessToken)
     }
     UserLogin = await signInWithCredential(
         FIREBASE_AUTH,
         credential
     );
-    console.log(UserLogin)
+
+    CreateDataUser(FIREBASE_AUTH.currentUser, SignMethod)
     return UserLogin;
 }
 export function handleFirebaseError(error) {
@@ -89,4 +95,20 @@ export async function logOutUser() {
     } catch (error) {
         console.error("Error al cerrar sesión: ", error);
     }
+}
+
+export async function AddAccountCalendar(UserCredential) {
+
+    var SignMethod = ""
+    var isMicrosoft = UserCredential.providerId
+    if (!isMicrosoft) {
+        if (UserCredential.providerData.providerId === 'google.com') {
+            SignMethod = 'google'
+        }
+
+    } else {
+        SignMethod = 'microsoft'
+
+    }
+    CreateDataUser(UserCredential, SignMethod, true)
 }

@@ -66,7 +66,7 @@ export default function SignUpScreen({ navigation }) {
             await SignInEmailPassword(user, password);
             navigation.navigate('SuccessScreen');
         } catch (error) {
-            console.log(error)
+            //console.log(error)
             handleFirebaseError(error);
         }
     }

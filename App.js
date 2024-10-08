@@ -10,6 +10,8 @@ import Chat from './screens/Chat/Chat'
 import SuccessScreen from './screens/Login/SuccessSignUp';
 import { useEffect } from 'react';
 import LoginWeb from './screens/Login/LoginWebScreen';
+import AddAccountWeb from './screens/Login/AddAccountCalendar';
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -17,7 +19,7 @@ function App() {
     // Escuchar cuando la aplicación se abra mediante un deep link
     const handleDeepLink = async (event) => {
       const url = new URL(event.url);
-      console.log('url',url)
+      //console.log('url',url)
 
     };
 
@@ -39,6 +41,7 @@ function App() {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
         <Stack.Screen name="LoginWeb" component={LoginWeb} />
+        <Stack.Screen name="AddAccountWeb" component={AddAccountWeb} />
       </Stack.Navigator>
     </NavigationContainer>
   );
