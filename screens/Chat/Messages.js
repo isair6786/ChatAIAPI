@@ -5,7 +5,15 @@ import UserKind from '../../Constants/UserKind'
 import * as api from '../../services/ApiChat'
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+  } from "@react-navigation/drawer";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import Colors from '../../Constants/Colors'
+import AccountPicker from '../../Constants/Components/SelectAccountPicker'
 
+const Drawer = createDrawerNavigator();
 function createContext(messages) {
     const context = messages.map(msg => ({
         role: msg.UsuarioChat === UserKind.FINAL_USER ? 'user' : 'assistant',
@@ -37,9 +45,10 @@ const adjustToCentralAmericaTime = (dateString) => {
     return adjustedDate;
 };
 
-export default function Example() {
+export function Example({route}) {
     const [messages, setMessages] = useState([])
     const [db, setDb] = useState(null);
+
     //Hook cuando cargue el chat en pantalla 
     useEffect(() => {
         async function initializeDB() {
@@ -109,3 +118,32 @@ export default function Example() {
         />
     )
 }
+function CustomDrawerContent(props) {
+    const nombre = "Configuracion";
+  
+    return (
+      <DrawerContentScrollView {...props}>
+        <View className="flex flex-column pl-2 pr-4">
+          <View className="flex flex-row pb-3 mt-3 items-center">
+             <Text className="text-base ml-2">{nombre}</Text>
+          </View>
+          <View
+            style={{
+              borderBottomColor: Colors.Gray.light,
+              borderBottomWidth: 1,
+            }}
+          />
+        <AccountPicker/>
+        </View>
+      </DrawerContentScrollView>
+    );
+  }
+export default function Asistente() {
+     return (
+      <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+      >
+        <Drawer.Screen name="AsistenteAI" component={Example}  />
+      </Drawer.Navigator>
+    );
+  }

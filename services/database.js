@@ -120,10 +120,11 @@ export async function SelectDataUserByUUID(_table, _email, db) {
 //Funcion que se ejecuta al loguearse con proveedores externos
 // para crear los datos locales del calendario del usuario
 export async function CreateDataUser(_user, _idProvider, _addAccount = false) {
+    var isError=false
     const db = await CrearDb();
     await CreateTableCalendar(db);
-    const _email = _idProvider == 'microsoft' ? _user.user.email : _user.email
-    const _token = _idProvider == 'microsoft' ? JSON.stringify(_user.user.stsTokenManager) : JSON.stringify(_user.stsTokenManager)
+    const _email = _user.email
+    const _token = ""
         //Validamos si ya tiene logueada las dos cuentas
     var countAccounts = await SelectTableCalendar('CalendarsUsers', 'desc', 'uuid');
     //Validamos si ya existe esa cuenta asociada a nuestro usuario logueado
@@ -133,11 +134,15 @@ export async function CreateDataUser(_user, _idProvider, _addAccount = false) {
             console.log('entramos')
             await InsertCalendar(FIREBASE_AUTH.currentUser.uid, _email, _token, _idProvider, db)
         } else if (_addAccount) {
+            isError=true
             Alert.alert("Cuenta ya vinculada", "La cuenta que deseas vincular ya se encuentra asociada a tu usuario")
         }
     } else if (_addAccount) {
+        isError=true
         Alert.alert("Limite de cuentas", "Solo puedes vincular dos cuentas a la vez")
     }
+
+    return isError
 
 }
 
@@ -150,4 +155,39 @@ export async function SelectTableCalendar(tabla, orderby = 'ASC', campo = 'idCha
 export async function DeleteAccountCalendar(email) {
     const db = await CrearDb();
     await db.getAllAsync(`DELETE FROM  CalendarsUsers  where uuid='${FIREBASE_AUTH.currentUser.uid}' and email = '${email}'`);
+}
+
+/*Para la cuenta de uso de chat */
+async function CreateTableAccount(db) {
+    //Para crear tabla 
+    await db.execAsync(`
+        PRAGMA journal_mode = WAL;
+        CREATE TABLE IF NOT EXISTS AccountChat (id INTEGER PRIMARY KEY NOT NULL,
+         uuid TEXT NOT NULL  ,email TEXT NOT NULL)
+        `);
+}
+export async function SelectAccountUserByUUID(_table="AccountChat") {
+    const db = await CrearDb();
+    await CreateTableAccount(db) 
+    const firstRow = await db.getFirstAsync(`SELECT * FROM  ${_table} where uuid = '${FIREBASE_AUTH.currentUser.uid}'`);
+    return firstRow;
+}
+
+export async function SetAccountChat(_email) {
+    const db = await CrearDb();
+    await CreateTableAccount(db) 
+    const data = await SelectAccountUserByUUID("AccountChat")
+    if (data<1){
+        await db.runAsync(
+            `INSERT INTO AccountChat(uuid,email) VALUES(?,?)`,
+            FIREBASE_AUTH.currentUser.uid,_email
+        );
+    
+    }else{
+        await db.runAsync(
+            `UPDATE AccountChat SET email = ? WHERE uuid = ? `,
+            _email,FIREBASE_AUTH.currentUser.uid
+        );
+    }
+
 }

@@ -1,11 +1,22 @@
 import { API_URL, API_TOKEN } from "@env"
 import axios from 'axios';
+import { SelectAccountUserByUUID } from "./database";
+import { FIREBASE_AUTH } from "./Firebase/FirebaseConfig";
+import { Alert } from "react-native";
 
 export async function EnviarMensaje(context) {
+   
+    var emailUid=await SelectAccountUserByUUID();
+    if(!emailUid){
+        Alert.alert("Envio de Chat", "Seleccione una cuenta para el uso del asistente");
+        return;
+    }
     var data = {
-            contexto: JSON.stringify(context)
+            contexto: JSON.stringify(context),
+            uid:FIREBASE_AUTH.currentUser.uid,
+            correoUid:emailUid.email
         }
-        //console.log(data)
+    
     var mensaje = '';
     try {
         const response = await axios.post(API_URL + "/send-message", data);

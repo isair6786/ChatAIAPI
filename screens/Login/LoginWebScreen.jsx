@@ -11,14 +11,27 @@ export default function LoginWeb({ navigation }) {
  const OnHandleMessage=async (message)=>{
    if(message.nativeEvent.data){
         var content = JSON.parse(message.nativeEvent.data)
-        await LoginWithCredential(content.mensaje,content.mensaje.providerId?content.mensaje.providerId:'microsoft.com')
+        await LoginWithCredential(content.mensaje,content.mensaje.providerId?content.mensaje.providerId:'microsoft.com',content)
     }
     
  }
   const INJECTED_JAVASCRIPT = `
-  window.ValidToken = (mensaje) => {
-    window.ReactNativeWebView.postMessage(JSON.stringify({ mensaje }));
-  };
+  window.ValidToken = (mensaje = null, token = null) => {
+  const data = {};
+
+  // Solo agregamos propiedades al objeto si tienen un valor no nulo
+  if (mensaje !== null) {
+    data.mensaje = mensaje;
+  }
+  if (token !== null) {
+    data.token = token;
+  }
+
+  // Enviamos solo si hay algo en el objeto 'data'
+  if (Object.keys(data).length > 0) {
+    window.ReactNativeWebView.postMessage(JSON.stringify(data));
+  }
+};
 `;
   return (
     <WebView

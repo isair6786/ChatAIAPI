@@ -13,8 +13,7 @@ export default function AddAccountWeb({ navigation }) {
  const OnHandleMessage=async (message)=>{
    if(message.nativeEvent.data){
         var content = JSON.parse(message.nativeEvent.data)
-        console.log(content.mensaje)
-        await AddAccountCalendar(content.mensaje)
+        await AddAccountCalendar(content.mensaje.data,content)
         navigation.reset({
           index: 0,
           routes: [{ name: 'Chat' }],
@@ -22,16 +21,29 @@ export default function AddAccountWeb({ navigation }) {
     }
     
  }
-  const INJECTED_JAVASCRIPT = `
-  window.ValidToken = (mensaje) => {
-    window.ReactNativeWebView.postMessage(JSON.stringify({ mensaje }));
-  };
-  window.IsAddAccount = true;
+ const INJECTED_JAVASCRIPT = `
+ window.ValidToken = (mensaje = null, token = null) => {
+ const data = {};
+
+ // Solo agregamos propiedades al objeto si tienen un valor no nulo
+ if (mensaje !== null) {
+   data.mensaje = mensaje;
+ }
+ if (token !== null) {
+   data.token = token;
+ }
+
+ // Enviamos solo si hay algo en el objeto 'data'
+ if (Object.keys(data).length > 0) {
+   window.ReactNativeWebView.postMessage(JSON.stringify(data));
+ }
+};
+window.IsAddAccount = true;
 `;
   return (
     <WebView
       style={styles.container}
-      source={{ uri: URI_LOGIN }}
+      source={{ uri: URI_LOGIN + '?Mostrar=true' }}
       javaScriptEnabled={true}
       //incognito={true}
       injectedJavaScript={INJECTED_JAVASCRIPT}

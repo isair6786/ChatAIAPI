@@ -6,18 +6,19 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { DeleteAccountCalendar, SelectTableCalendar } from "../../services/database";
 import { useNavigation } from "@react-navigation/native";
 import { FIREBASE_AUTH } from "../../services/Firebase/FirebaseConfig";
+import { EliminarToken } from "../../services/ApiProviders";
 
 export default function PickerDefault() {
   const [selectedAccount, setSelectedAccount] = useState();
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Estado para la carga
   const navigation = useNavigation(); // Obtén el objeto de navegación
-
+  const [accountsSize, setAccountsSize] = useState(0);//Validar cuentas logueadas
   async function eliminarCuenta() {
-    if (selectedAccount === FIREBASE_AUTH.currentUser.email) {
+    /*if (selectedAccount === FIREBASE_AUTH.currentUser.email) {
       Alert.alert("Eliminar Cuentas", "No se puede eliminar la cuenta principal");
       return;
-    }
+    }*/
     
     Alert.alert(
       "Eliminar Cuentas",
@@ -32,6 +33,7 @@ export default function PickerDefault() {
           onPress: async () => {
             setIsLoading(true); // Inicia el indicador de carga
             try {
+              await EliminarToken(selectedAccount);//Este elimina del server el token
               await DeleteAccountCalendar(selectedAccount);
               await actualizarData();
               setIsLoading(false); // Finaliza la carga
@@ -54,6 +56,8 @@ export default function PickerDefault() {
     const data = await SelectTableCalendar("CalendarsUsers", "desc", "uuid");
     setAccounts(data);
     setSelectedAccount(data[0]?.email); // Actualiza la cuenta seleccionada
+    setAccountsSize(await cantidadCuentas())
+    await SetAccountChat(data[0]?.email);
   }
 
   async function cantidadCuentas() {
@@ -66,6 +70,7 @@ export default function PickerDefault() {
       const data = await SelectTableCalendar("CalendarsUsers", "desc", "uuid");
       setAccounts(data);
       setSelectedAccount(data[0]?.email);
+      setAccountsSize(await cantidadCuentas())
     }
     getData();
   }, []);
@@ -74,7 +79,11 @@ export default function PickerDefault() {
     <View className="flex flex-col items-start mt-5 p-2">
       <Text className="text-base text-left pl-1">Cuentas</Text>
       <View className="flex flex-row items-center pl-1">
-        <Picker
+        { accountsSize<1?
+          (<>
+          <Text className="text-small">Añade tus cuentas </Text>
+          </>):<>
+          <Picker
           style={{
             width: 180,
             backgroundColor: "white",
@@ -96,7 +105,9 @@ export default function PickerDefault() {
             />
           ))}
         </Picker>
-
+      </>
+      }
+        
         <TouchableOpacity
           onPress={async () => {
             const count = await cantidadCuentas();
@@ -124,3 +135,4 @@ export default function PickerDefault() {
     </View>
   );
 }
+

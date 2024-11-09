@@ -11,7 +11,8 @@ import Colors from "../../Constants/Colors";
 import { DefaultToggle } from "../../Constants/Components/Toogle";
 import PickerDefault from "../../Constants/Components/Picker";
 import { FIREBASE_AUTH } from "../../services/Firebase/FirebaseConfig";
-import { getRandomLightColor, NameSplit } from "../../Functions/Functions";
+import { getRandomLightColor, NameSplit, obtenerSoloFechaActual } from "../../Functions/Functions";
+import { ConsultarEventos } from "../../services/ApiProviders";
 
 const Drawer = createDrawerNavigator();
 
@@ -20,25 +21,27 @@ function CalendarioEventos() {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Calendario.requestCalendarPermissionsAsync();
-      console.log(status);
-      if (status === "granted") {
-        const calendars = await Calendario.getCalendarsAsync(
-          Calendario.EntityTypes.EVENT
-        );
-        const calendarIds = calendars.map((calendar) => calendar.id);
-        const startDate = new Date();
-        const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7); // Una semana después
-        startDate.setDate(startDate.getDate() + -3); // Tres dias antes
-        const eventos = await Calendario.getEventsAsync(
-          calendarIds,
-          startDate,
-          endDate
-        );
-        setEvents(CreateListEvents(eventos));
-        console.log({ eventos });
-      }
+      //const { status } = await Calendario.requestCalendarPermissionsAsync();
+      //console.log(status);
+      //if (status === "granted") {
+      // const calendars = await Calendario.getCalendarsAsync(
+      //  Calendario.EntityTypes.EVENT
+      // );
+      // const calendarIds = calendars.map((calendar) => calendar.id);
+      // const startDate = new Date();
+      // const endDate = new Date();
+      // endDate.setDate(endDate.getDate() + 7); // Una semana después
+      // startDate.setDate(startDate.getDate() + -3); // Tres dias antes
+      // const eventos = await Calendario.getEventsAsync(
+      //   calendarIds,
+      //   startDate,
+      //   endDate
+      // );
+      // console.log("eventos",eventos)
+      const startDate = obtenerSoloFechaActual()
+      const eventos = await ConsultarEventos(startDate)
+
+      setEvents(CreateListEvents(eventos));
     })();
   }, []);
 
@@ -46,7 +49,11 @@ function CalendarioEventos() {
     <View className="flex h-full w-full">
       <Agenda
         items={events}
-        renderItem={(item, isFirst) => (
+        onDayPress={async day => {
+          const eventos = await ConsultarEventos(day.dateString)
+          setEvents(CreateListEvents(eventos));
+        }}
+        renderItem={(item) => (
           <TouchableOpacity
             style={{
               backgroundColor: "white",
@@ -55,11 +62,43 @@ function CalendarioEventos() {
               padding: 10,
               marginRight: 10,
               marginTop: 17,
+              flexDirection: "row", // Para alinear el círculo y los textos horizontalmente
+              alignItems: "center",  // Centrar verticalmente los elementos
             }}
           >
-            <Text className="font-bold">{item.name}</Text>
-            <Text>{item.data}</Text>
+            {/* Círculo con inicial */}
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15, // Para hacer un círculo
+                backgroundColor: item.provider_id === "microsoft.com" ? "#00bbff" : "#ffb000", // Color según el proveedor
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 15, // Espaciado entre el círculo y el texto
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                {item.provider_id === "microsoft.com" ? "M" : "G"} {/* Inicial del proveedor */}
+              </Text>
+            </View>
+
+            {/* Texto del evento */}
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 12, color: "gray" }}>
+                {item.provider_id} - Calendario: {item.calendar_name} 
+              </Text>
+              <Text style={{ fontSize: 12, color: "gray" }}>
+                <Text style={{ fontSize: 13, color: "gray", fontWeight: 900 }}>Cuenta </Text> {item.account}
+              </Text>
+              <Text className="font-bold">{item.name}</Text>
+              <Text>{item.data}</Text>
+              <Text style={{ fontSize: 12, color: "gray" }}>
+                {item.calendarName} {/* Nombre del calendario */}
+              </Text>
+            </View>
           </TouchableOpacity>
+
         )}
         renderEmptyDate={() => (
           <View style={{ margin: 10 }}>
@@ -73,7 +112,8 @@ function CalendarioEventos() {
 
 function CreateListEvents(events) {
   const formattedItems = events.reduce(
-    (acc, { startDate, title, notes, endDate, timeZone }) => {
+    (acc, { startDate, title, notes, endDate, timeZone, calendarName, email, provider }) => {
+
       // Extraemos solo la parte de la fecha de startDate (ignorando la hora)
       const eventDate = moment.tz(startDate, timeZone).format("YYYY-MM-DD");
       const startTime = moment.tz(startDate, timeZone).format("HH:mm");
@@ -86,8 +126,11 @@ function CreateListEvents(events) {
 
       // Añadimos el evento al array correspondiente a la fecha
       acc[eventDate].push({
+        account: email,
+        provider_id: provider,
+        calendar_name: calendarName,
         name: title,
-        data: Detalles || "No additional details",
+        data: Detalles || "Sin detalles adicionales",
       });
 
       // Devolvemos el acumulador para la siguiente iteración
@@ -95,6 +138,7 @@ function CreateListEvents(events) {
     },
     {}
   );
+  //console.log(formattedItems)
   return formattedItems;
 }
 /*Drawer*/
@@ -119,44 +163,10 @@ function CustomDrawerContent(props) {
             borderBottomWidth: 1,
           }}
         />
-        <PickerDefault
-          items={[
-            { label: "Nombre del ítem", value: "valor" },
-            { label: "Nombre del ítem 2 ", value: "valor 2" },
-          ]}
-        />
+        <PickerDefault />
         <DefaultToggle color={Colors.Emerald} />
       </View>
     </DrawerContentScrollView>
-  );
-}
-function MyToggle({ color }) {
-  const [isOn, setIsOn] = useState(false);
-
-  return (
-    <View className="flex-row items-center m-1.5">
-      <Pressable
-        onPress={() => setIsOn(!isOn)}
-        className={`w-10 h-5 flex items-left rounded-full`}
-        style={
-          isOn
-            ? { backgroundColor: color.light }
-            : { backgroundColor: "#dadada" }
-        }
-      >
-        <View
-          className={`w-5 h-5 rounded-full shadow-md transform ${
-            isOn ? "translate-x-5" : "translate-x-0"
-          } `}
-          style={
-            isOn
-              ? { backgroundColor: color.dark }
-              : { backgroundColor: "#ffffff" }
-          }
-        />
-      </Pressable>
-      <Text className="ml-4 text-lg">{isOn ? "Encendido" : "Apagado"}</Text>
-    </View>
   );
 }
 export default function Calendarios() {

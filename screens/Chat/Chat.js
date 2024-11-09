@@ -57,7 +57,11 @@
               tabBarInactiveTintColor: 'gray',
           })}
       >
-          <Tab.Screen name="Asistente" component={Messages} />
+          <Tab.Screen name="Asistente" component={Messages}  options={{
+            headerShown: false,
+            headerTitleAlign:'center'
+             // Ocultar la tabBar en Calendario
+          }}/>
           <Tab.Screen name="Agenda" component={Calendarios} options={{
             headerShown: false,
             headerTitleAlign:'center'
