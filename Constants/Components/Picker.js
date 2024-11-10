@@ -3,23 +3,23 @@ import { Picker } from "@react-native-picker/picker";
 import { View, TouchableOpacity, Text, Alert, ActivityIndicator } from "react-native";
 import Colors from "../Colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { DeleteAccountCalendar, SelectTableCalendar } from "../../services/database";
+import { DeleteAccountCalendar, SelectTableCalendar, SetAccountChat } from "../../services/database";
 import { useNavigation } from "@react-navigation/native";
 import { FIREBASE_AUTH } from "../../services/Firebase/FirebaseConfig";
 import { EliminarToken } from "../../services/ApiProviders";
 
-export default function PickerDefault() {
+export default function PickerDefault({name,setRender}) {
   const [selectedAccount, setSelectedAccount] = useState();
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Estado para la carga
   const navigation = useNavigation(); // Obtén el objeto de navegación
   const [accountsSize, setAccountsSize] = useState(0);//Validar cuentas logueadas
+  const [DoRenderCalendar,setDoRenderCalendar]=useState(false)
   async function eliminarCuenta() {
     /*if (selectedAccount === FIREBASE_AUTH.currentUser.email) {
       Alert.alert("Eliminar Cuentas", "No se puede eliminar la cuenta principal");
       return;
     }*/
-    
     Alert.alert(
       "Eliminar Cuentas",
       `¿Desea eliminar la cuenta ${selectedAccount}?`,
@@ -38,7 +38,10 @@ export default function PickerDefault() {
               await actualizarData();
               setIsLoading(false); // Finaliza la carga
               Alert.alert("Éxito", "Cuenta eliminada exitosamente");
+              setRender(!DoRenderCalendar)
+              setDoRenderCalendar(!DoRenderCalendar)
             } catch (error) {
+              console.log(error)
               setIsLoading(false); // Finaliza la carga en caso de error
               Alert.alert(
                 "Error",
@@ -71,13 +74,14 @@ export default function PickerDefault() {
       setAccounts(data);
       setSelectedAccount(data[0]?.email);
       setAccountsSize(await cantidadCuentas())
+      await SetAccountChat(data[0]?.email);
     }
     getData();
   }, []);
 
   return (
     <View className="flex flex-col items-start mt-5 p-2">
-      <Text className="text-base text-left pl-1">Cuentas</Text>
+      <Text className="text-base text-left pl-1">{name}</Text>
       <View className="flex flex-row items-center pl-1">
         { accountsSize<1?
           (<>

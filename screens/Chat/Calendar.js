@@ -16,34 +16,26 @@ import { ConsultarEventos } from "../../services/ApiProviders";
 
 const Drawer = createDrawerNavigator();
 
-function CalendarioEventos() {
+function CalendarioEventos({render}) {
   const [events, setEvents] = useState({});
 
   useEffect(() => {
     (async () => {
-      //const { status } = await Calendario.requestCalendarPermissionsAsync();
-      //console.log(status);
-      //if (status === "granted") {
-      // const calendars = await Calendario.getCalendarsAsync(
-      //  Calendario.EntityTypes.EVENT
-      // );
-      // const calendarIds = calendars.map((calendar) => calendar.id);
-      // const startDate = new Date();
-      // const endDate = new Date();
-      // endDate.setDate(endDate.getDate() + 7); // Una semana después
-      // startDate.setDate(startDate.getDate() + -3); // Tres dias antes
-      // const eventos = await Calendario.getEventsAsync(
-      //   calendarIds,
-      //   startDate,
-      //   endDate
-      // );
-      // console.log("eventos",eventos)
       const startDate = obtenerSoloFechaActual()
       const eventos = await ConsultarEventos(startDate)
 
       setEvents(CreateListEvents(eventos));
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const startDate = obtenerSoloFechaActual()
+      const eventos = await ConsultarEventos(startDate)
+
+      setEvents(CreateListEvents(eventos));
+    })();
+  }, [render]);
 
   return (
     <View className="flex h-full w-full">
@@ -142,7 +134,7 @@ function CreateListEvents(events) {
   return formattedItems;
 }
 /*Drawer*/
-function CustomDrawerContent(props) {
+function CustomDrawerContent({setRender,...props}) {
   const nombre = NameSplit(FIREBASE_AUTH.currentUser.displayName);
 
   return (
@@ -163,18 +155,23 @@ function CustomDrawerContent(props) {
             borderBottomWidth: 1,
           }}
         />
-        <PickerDefault />
+        <PickerDefault name="Cuentas" setRender={setRender} />
         <DefaultToggle color={Colors.Emerald} />
       </View>
     </DrawerContentScrollView>
   );
 }
 export default function Calendarios() {
+  const [render,setRender]=useState(false)
+
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={(props) => <CustomDrawerContent {...props} setRender={setRender} />}
     >
-      <Drawer.Screen name="Agendas" component={CalendarioEventos} />
+      <Drawer.Screen name="Agendas">
+                {(props) => <CalendarioEventos {...props} render={render} />}
+        </Drawer.Screen>
+
     </Drawer.Navigator>
   );
 }

@@ -53,8 +53,8 @@
 
                   return <Ionicons name={iconName} size={size} color={color} />;
               },
-              tabBarActiveTintColor: 'indigo',
-              tabBarInactiveTintColor: 'gray',
+              tabBarActiveTintColor: '#34707e',
+              tabBarInactiveTintColor: '#798b9e',
           })}
       >
           <Tab.Screen name="Asistente" component={Messages}  options={{

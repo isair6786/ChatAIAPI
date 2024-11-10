@@ -30,10 +30,19 @@ export async function CrearTabla(db) {
         `);
 }
 
-export async function BorrarTabla(db, tabla = 'ChatMensajes') {
-    await db.execAsync(`
-        DROP TABLE IF EXISTS ${tabla}
-        `);
+export async function BorrarTabla() {
+    var isError=false;
+    const db = await CrearDb()
+    
+    try {
+        await db.execAsync(`
+            DELETE FROM ChatMensajes where uuid ='${FIREBASE_AUTH.currentUser.uid}'
+            `);
+    } catch (error) {
+        console.log(error)
+        isError=true;
+    }
+    return isError
 }
 
 export async function SelectTablaCompleta(tabla, db, orderby = 'ASC', campo = 'idChatRow') {
@@ -92,7 +101,7 @@ export async function InsertCalendar(_uuid, _email, _token, _id_provider, db) {
 }
 
 export async function InsertDataCalendar(_uuid, _email, _calendar, _calendarId, _activo) {
-    const db = CrearDb()
+    const db = await CrearDb()
     const result = await db.runAsync(`INSERT INTO CalendarsUsersData
          (uuid, email,calendario,id_calentario,activo) VALUES (?, ?,?,?,?)`,
         _uuid, _email, _calendar, _calendarId, _activo);
@@ -100,7 +109,7 @@ export async function InsertDataCalendar(_uuid, _email, _calendar, _calendarId, 
 }
 
 export async function UpdateActivoByUuidEmail(_uuid, _email, _activo) {
-    const db = CrearDb();
+    const db =await CrearDb();
     const result = await db.runAsync(
         `UPDATE CalendarsUsersData SET activo = ? WHERE uuid = ? AND email = ?`,
         _activo, _uuid, _email
@@ -174,6 +183,7 @@ export async function SelectAccountUserByUUID(_table="AccountChat") {
 }
 
 export async function SetAccountChat(_email) {
+    _email=_email==undefined?"no account":_email
     const db = await CrearDb();
     await CreateTableAccount(db) 
     const data = await SelectAccountUserByUUID("AccountChat")

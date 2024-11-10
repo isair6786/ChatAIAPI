@@ -20,10 +20,14 @@ export default function AccountPicker() {
   }, []);
 
   return (
-    <View className="flex flex-col items-start mt-5 p-2">
-      <Text className="text-base text-left pl-1 mb-2">Elige la cuenta a usar en el Asistente:</Text>
-      <View className="flex flex-row items-center pl-1">
-        <Picker
+    <View className="flex flex-col items-start mb-5">
+      <View className="flex flex-row items-center">
+      { accounts<1?
+          (<>
+          <Text className="text-small text-red-600">No hay cuentas registradas, añadelas desde la pestaña de agenda </Text>
+          </>):
+          <>
+          <Picker
           style={{
             width: 250,
             backgroundColor: "white",
@@ -37,7 +41,7 @@ export default function AccountPicker() {
           onValueChange={async (itemValue) => {
             setSelectedAccount(itemValue)
             await SetAccountChat(itemValue);
-           console.log(await SelectAccountUserByUUID())
+           //console.log(await SelectAccountUserByUUID())
           }
           }
         >
@@ -50,6 +54,8 @@ export default function AccountPicker() {
             />
           ))}
         </Picker>
+        </>
+        }
       </View>
     </View>
   );

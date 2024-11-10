@@ -7,10 +7,6 @@ import { Alert } from "react-native";
 export async function EnviarMensaje(context) {
    
     var emailUid=await SelectAccountUserByUUID();
-    if(!emailUid){
-        Alert.alert("Envio de Chat", "Seleccione una cuenta para el uso del asistente");
-        return;
-    }
     var data = {
             contexto: JSON.stringify(context),
             uid:FIREBASE_AUTH.currentUser.uid,
