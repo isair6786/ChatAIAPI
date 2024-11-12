@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, Pressable,ActivityIndicator } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as Calendario from "expo-calendar";
 import { Agenda } from "react-native-calendars";
@@ -16,8 +16,18 @@ import { ConsultarEventos } from "../../services/ApiProviders";
 
 const Drawer = createDrawerNavigator();
 
-function CalendarioEventos({render}) {
+function CalendarioEventos({ render }) {
   const [events, setEvents] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+
+    // Limpiar el temporizador en desmontaje
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   useEffect(() => {
     (async () => {
@@ -40,8 +50,10 @@ function CalendarioEventos({render}) {
   return (
     <View className="flex h-full w-full">
       <Agenda
+       
         items={events}
         onDayPress={async day => {
+          setIsLoading(true)
           const eventos = await ConsultarEventos(day.dateString)
           setEvents(CreateListEvents(eventos));
         }}
@@ -57,6 +69,7 @@ function CalendarioEventos({render}) {
               flexDirection: "row", // Para alinear el círculo y los textos horizontalmente
               alignItems: "center",  // Centrar verticalmente los elementos
             }}
+            onPress={() => console.log(item.id,item.provider_id,item.calendarId)}
           >
             {/* Círculo con inicial */}
             <View
@@ -78,7 +91,7 @@ function CalendarioEventos({render}) {
             {/* Texto del evento */}
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 12, color: "gray" }}>
-                {item.provider_id} - Calendario: {item.calendar_name} 
+                {item.provider_id} - Calendario: {item.calendar_name}
               </Text>
               <Text style={{ fontSize: 12, color: "gray" }}>
                 <Text style={{ fontSize: 13, color: "gray", fontWeight: 900 }}>Cuenta </Text> {item.account}
@@ -92,10 +105,19 @@ function CalendarioEventos({render}) {
           </TouchableOpacity>
 
         )}
-        renderEmptyDate={() => (
-          <View style={{ margin: 10 }}>
-            <Text>Sin eventos</Text>
-          </View>
+        renderEmptyData={() => (
+          isLoading ? (
+            <View className="flex-1 justify-center items-center bg-white">
+              <ActivityIndicator size="large" color="#gray" />
+              <Text className="text-gray-500 text-center mt-4">Buscando eventos...</Text>
+            </View>
+          ) : (
+            <View className="flex-1 justify-center items-center bg-white">
+              <Text className="text-gray-500 text-center mt-4">
+                No hay eventos para esta fecha
+              </Text>
+            </View>
+          )
         )}
       />
     </View>
@@ -104,7 +126,7 @@ function CalendarioEventos({render}) {
 
 function CreateListEvents(events) {
   const formattedItems = events.reduce(
-    (acc, { startDate, title, notes, endDate, timeZone, calendarName, email, provider }) => {
+    (acc, { startDate, title, notes, endDate, timeZone, calendarName, email, provider,id,calendarId }) => {
 
       // Extraemos solo la parte de la fecha de startDate (ignorando la hora)
       const eventDate = moment.tz(startDate, timeZone).format("YYYY-MM-DD");
@@ -118,6 +140,8 @@ function CreateListEvents(events) {
 
       // Añadimos el evento al array correspondiente a la fecha
       acc[eventDate].push({
+        id,
+        calendarId,
         account: email,
         provider_id: provider,
         calendar_name: calendarName,
@@ -134,7 +158,7 @@ function CreateListEvents(events) {
   return formattedItems;
 }
 /*Drawer*/
-function CustomDrawerContent({setRender,...props}) {
+function CustomDrawerContent({ setRender, ...props }) {
   const nombre = NameSplit(FIREBASE_AUTH.currentUser.displayName);
 
   return (
@@ -156,21 +180,21 @@ function CustomDrawerContent({setRender,...props}) {
           }}
         />
         <PickerDefault name="Cuentas" setRender={setRender} />
-        <DefaultToggle color={Colors.Emerald} />
+
       </View>
     </DrawerContentScrollView>
   );
 }
 export default function Calendarios() {
-  const [render,setRender]=useState(false)
+  const [render, setRender] = useState(false)
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} setRender={setRender} />}
     >
       <Drawer.Screen name="Agendas">
-                {(props) => <CalendarioEventos {...props} render={render} />}
-        </Drawer.Screen>
+        {(props) => <CalendarioEventos {...props} render={render} />}
+      </Drawer.Screen>
 
     </Drawer.Navigator>
   );

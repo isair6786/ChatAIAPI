@@ -3,6 +3,7 @@ import { Picker } from "@react-native-picker/picker";
 import { View, Text} from "react-native";
 import Colors from "../Colors";
 import {  SelectAccountUserByUUID, SelectTableCalendar, SetAccountChat } from "../../services/database";
+import { Alert } from "react-native";
 
 export default function AccountPicker() {
   const [selectedAccount, setSelectedAccount] = useState();
@@ -41,6 +42,7 @@ export default function AccountPicker() {
           onValueChange={async (itemValue) => {
             setSelectedAccount(itemValue)
             await SetAccountChat(itemValue);
+            Alert.alert("Cambio de cuenta",`La cuenta a usar es ${itemValue}`)
            //console.log(await SelectAccountUserByUUID())
           }
           }

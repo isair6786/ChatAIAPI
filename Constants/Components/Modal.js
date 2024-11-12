@@ -72,9 +72,13 @@ export default function Modal_Chat() {
           >
             <Text className="text-black mb-5 " style={{ fontSize: 18 }}>Cuentas</Text>
             <AccountPicker/>
-            <TouchableOpacity className="bg-rose-100  py-3 px-3 rounded " style={{ width: 75 }}
+            <TouchableOpacity className=" py-3 px-3 rounded " style={{ width: 85 }}
               onPress={() => closeModal()}>
-              <Text className="font-bold text-rose-700">Cerrar</Text>
+              <Text className="font-bold text-rose-700">Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className=" py-3 px-3 rounded " style={{ width: 85 }}
+              onPress={() => closeModal()}>
+              <Text className="font-bold text-teal-700">Aceptar</Text>
             </TouchableOpacity>
         </View>
       </View>

@@ -41,14 +41,13 @@ function GenerateObjectMessage(message) {
     return data
 }
 
-
-
 const adjustToCentralAmericaTime = (dateString) => {
     const date = new Date(dateString);
     const offset = -6 * 60 * 60 * 1000; // UTC-6
     const adjustedDate = new Date(date.getTime() + offset);
     return adjustedDate;
 };
+
 function DoEmptyChat({setRender}) {
     const navigation = useNavigation();
     const [DoEmpChat,setDoEmpChat]=useState(false)
@@ -119,6 +118,16 @@ export function Example({ render,route }) {
                         avatar: require('../../assets/images/chatUser.png'), // Ajusta según tus datos
                     },
                 }));
+                formattedMessages.push({
+                    _id: 0,
+                    text: "Hola , soy Shedzy, ¿Cómo puedo ayudarte?",
+                    createdAt: adjustToCentralAmericaTime(Date.now()), // Puedes ajustar esto según tus datos
+                    user: {
+                        _id: 2, // Ajusta según UserKind
+                        name: 'User', // Puedes ajustar esto según tus datos
+                        avatar: require('../../assets/images/chatUser.png'), // Ajusta según tus datos
+                    },
+                })
                 setMessages(formattedMessages);
             } catch (error) {
                 console.error('Error initializing database:', error);
@@ -126,6 +135,7 @@ export function Example({ render,route }) {
         }
         initializeDB();
     }, [])
+
      //Hook cuando cargue el chat en pantalla 
     useEffect(() => {
         async function initializeDB() {
@@ -146,6 +156,16 @@ export function Example({ render,route }) {
                         avatar: require('../../assets/images/chatUser.png'), // Ajusta según tus datos
                     },
                 }));
+                formattedMessages.push({
+                    _id: 0,
+                    text: "Hola , soy Shedzy, ¿Cómo puedo ayudarte?",
+                    createdAt: adjustToCentralAmericaTime(Date.now()), // Puedes ajustar esto según tus datos
+                    user: {
+                        _id: 2, // Ajusta según UserKind
+                        name: 'User', // Puedes ajustar esto según tus datos
+                        avatar: require('../../assets/images/chatUser.png'), // Ajusta según tus datos
+                    },
+                })
                 setMessages(formattedMessages);
             } catch (error) {
                 console.error('Error initializing database:', error);

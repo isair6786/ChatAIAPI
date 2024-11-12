@@ -40,3 +40,13 @@ export async function ConsultarEventos(_date) {
     }
     
 }
+
+export async function getRecentEmails() {
+    try {
+        const response=await axios.get(API_PROVIDERS_URL + `/api/readEmailbyProvider?uid=${FIREBASE_AUTH.currentUser.uid}`);
+        return response.data.message;  // Suponiendo que la respuesta tenga una propiedad "emails"
+    } catch (error) {
+        console.error("Error fetching emails: ", error);
+        return [];  // Devuelve un arreglo vacío en caso de error
+    }
+}

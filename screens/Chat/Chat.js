@@ -8,8 +8,8 @@
   import { FIREBASE_AUTH } from '../../services/Firebase/FirebaseConfig';
   import { onAuthStateChanged } from 'firebase/auth';
   import { logOutUser } from '../../services/Firebase/FirebaseFunctions';
+  import EmailsView from './Email';
 
-  
   const Tab = createBottomTabNavigator();
   function Chat() {
    
@@ -49,6 +49,8 @@
                       iconName = focused ? 'logo-ionitron' : 'logo-ionitron';
                   } else if (route.name === 'Agenda') {
                       iconName = focused ? 'calendar' : 'calendar-outline';
+                  }else if (route.name === 'Correos') {
+                      iconName = focused ? 'mail' : 'mail-outline';
                   }
 
                   return <Ionicons name={iconName} size={size} color={color} />;
@@ -63,6 +65,11 @@
              // Ocultar la tabBar en Calendario
           }}/>
           <Tab.Screen name="Agenda" component={Calendarios} options={{
+            headerShown: false,
+            headerTitleAlign:'center'
+             // Ocultar la tabBar en Calendario
+          }} />
+          <Tab.Screen name="Correos" component={EmailsView} options={{
             headerShown: false,
             headerTitleAlign:'center'
              // Ocultar la tabBar en Calendario
