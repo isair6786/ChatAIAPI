@@ -4,19 +4,20 @@
   import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
   import Ionicons from 'react-native-vector-icons/Ionicons';
   import Messages from './Messages'
-  import Calendar from './Calendar'
+  import Calendarios from './Calendar';
   import { FIREBASE_AUTH } from '../../services/Firebase/FirebaseConfig';
   import { onAuthStateChanged } from 'firebase/auth';
   import { logOutUser } from '../../services/Firebase/FirebaseFunctions';
-  
+  import EmailsView from './Email';
+
   const Tab = createBottomTabNavigator();
   function Chat() {
-
+   
     const [userEmail, setUserEmail] = useState('');
     const navigation = useNavigation(); // Obtener el objeto de navegación
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
-          console.log(currentUser)
+          //console.log(currentUser)
           if (!currentUser) {
               // El usuario no está autenticado, redirigir a la pantalla de inicio de sesión
               //console.log('aca vamos')
@@ -44,20 +45,35 @@
               tabBarIcon: ({ focused, color, size }) => {
                   let iconName;
 
-                  if (route.name === 'Chats') {
-                      iconName = focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline';
-                  } else if (route.name === 'Calendario') {
+                  if (route.name === 'Asistente') {
+                      iconName = focused ? 'logo-ionitron' : 'logo-ionitron';
+                  } else if (route.name === 'Agenda') {
                       iconName = focused ? 'calendar' : 'calendar-outline';
+                  }else if (route.name === 'Correos') {
+                      iconName = focused ? 'mail' : 'mail-outline';
                   }
 
                   return <Ionicons name={iconName} size={size} color={color} />;
               },
-              tabBarActiveTintColor: 'indigo',
-              tabBarInactiveTintColor: 'gray',
+              tabBarActiveTintColor: '#34707e',
+              tabBarInactiveTintColor: '#798b9e',
           })}
       >
-          <Tab.Screen name="Chats" component={Messages} />
-          <Tab.Screen name="Calendario" component={Calendar} />
+          <Tab.Screen name="Asistente" component={Messages}  options={{
+            headerShown: false,
+            headerTitleAlign:'center'
+             // Ocultar la tabBar en Calendario
+          }}/>
+          <Tab.Screen name="Agenda" component={Calendarios} options={{
+            headerShown: false,
+            headerTitleAlign:'center'
+             // Ocultar la tabBar en Calendario
+          }} />
+          <Tab.Screen name="Correos" component={EmailsView} options={{
+            headerShown: false,
+            headerTitleAlign:'center'
+             // Ocultar la tabBar en Calendario
+          }} />
       </Tab.Navigator>
 
       {/* Botón de cerrar sesión */}

@@ -1,42 +1,49 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import { WebView } from 'react-native-webview';
 import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { LoginWithCredential } from '../../services/Firebase/FirebaseFunctions';
+import { AddAccountCalendar } from '../../services/Firebase/FirebaseFunctions';
 import { OAuthProvider}  from 'firebase/auth';
 import { URI_LOGIN } from "@env"
-export default function LoginWeb({ navigation }) {
+
+export default function AddAccountWeb({ navigation }) {
+
  const OnHandleMessage=async (message)=>{
    if(message.nativeEvent.data){
         var content = JSON.parse(message.nativeEvent.data)
-        await LoginWithCredential(content.mensaje,content.mensaje.providerId?content.mensaje.providerId:'microsoft.com',content)
+        await AddAccountCalendar(content.mensaje.data,content)
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Chat' }],
+      });  
     }
     
  }
-  const INJECTED_JAVASCRIPT = `
-  window.ValidToken = (mensaje = null, token = null) => {
-  const data = {};
+ const INJECTED_JAVASCRIPT = `
+ window.ValidToken = (mensaje = null, token = null) => {
+ const data = {};
 
-  // Solo agregamos propiedades al objeto si tienen un valor no nulo
-  if (mensaje !== null) {
-    data.mensaje = mensaje;
-  }
-  if (token !== null) {
-    data.token = token;
-  }
+ // Solo agregamos propiedades al objeto si tienen un valor no nulo
+ if (mensaje !== null) {
+   data.mensaje = mensaje;
+ }
+ if (token !== null) {
+   data.token = token;
+ }
 
-  // Enviamos solo si hay algo en el objeto 'data'
-  if (Object.keys(data).length > 0) {
-    window.ReactNativeWebView.postMessage(JSON.stringify(data));
-  }
+ // Enviamos solo si hay algo en el objeto 'data'
+ if (Object.keys(data).length > 0) {
+   window.ReactNativeWebView.postMessage(JSON.stringify(data));
+ }
 };
+window.IsAddAccount = true;
 `;
   return (
     <WebView
       style={styles.container}
-      source={{ uri: URI_LOGIN }}
+      source={{ uri: URI_LOGIN + '?Mostrar=true' }}
       javaScriptEnabled={true}
       //incognito={true}
       injectedJavaScript={INJECTED_JAVASCRIPT}

@@ -8,6 +8,9 @@ import {
     GoogleAuthProvider,
     OAuthProvider,
 } from "firebase/auth";
+import { CreateDataUser } from "../database";
+import { createObjTokenProvider } from "../../Functions/Functions";
+import { GuardarToken } from "../ApiProviders";
 
 
 export async function LoginEmailPassword(user, password) {
@@ -24,20 +27,28 @@ export async function SignInEmailPassword(user, password) {
     );
     return UserLogin;
 }
-export async function LoginWithCredential(UserCredential, ProviderId) {
+export async function LoginWithCredential(UserCredential, ProviderId, GoogleAccess = {}) {
     var UserLogin = "";
     var credential = "";
+    var SignMethod = "";
+
     if (ProviderId === 'microsoft.com') {
+        SignMethod = 'microsoft'
         var provider = new OAuthProvider('microsoft.com')
         credential = OAuthProvider.credentialFromResult(UserCredential)
     } else {
+        SignMethod = 'google'
         credential = GoogleAuthProvider.credential(UserCredential.idToken, UserCredential.accessToken)
     }
     UserLogin = await signInWithCredential(
         FIREBASE_AUTH,
         credential
     );
-    console.log(UserLogin)
+    //console.log("credencial",GoogleAccess)
+    /*const token = createObjTokenProvider(
+        ProviderId == "google.com" ? GoogleAccess.token._tokenResponse : UserCredential,
+        ProviderId)*/
+    //CreateDataUser(FIREBASE_AUTH.currentUser, SignMethod)
     return UserLogin;
 }
 export function handleFirebaseError(error) {
@@ -88,5 +99,17 @@ export async function logOutUser() {
         // Puedes hacer algo aquí después de cerrar sesión, si es necesario
     } catch (error) {
         console.error("Error al cerrar sesión: ", error);
+    }
+}
+
+export async function AddAccountCalendar(UserCredential, content) {
+    var isMicrosoft = UserCredential.provider_id == "google.com" ? false : true;
+    var SignMethod = isMicrosoft ? "microsoft" : "google";
+    const token = createObjTokenProvider(UserCredential,
+        UserCredential.provider_id)
+    const errorCrearCuenta = await CreateDataUser(token, SignMethod, true)
+    //console.log(token)
+    if (!errorCrearCuenta) {
+        GuardarToken(token)
     }
 }
