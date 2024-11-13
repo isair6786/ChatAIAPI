@@ -20,15 +20,11 @@ export async function EnviarMensaje(context) {
         mensaje = response.data.responseMessage
     } catch (error) {
         if (error.response) {
-            console.error('Error de validación:', error.response.data);
-            console.error('Código de estado:', error.response.status);
-            console.error('Encabezados:', error.response.headers);
-        } else if (error.request) {
-            console.error('No se recibió respuesta:', error.request);
+             mensaje = "El servicio no esta disponible, intente nuevamente en un momento"
         } else {
-            console.error('Error al configurar la solicitud:', error.message);
-        }
-        mensaje = error.response
+             mensaje = "Ocurrio un error al enviar el mensaje, intente nuevamente"
+        } 
+        mensaje = "Ocurrio un error al enviar el mensaje, intente nuevamente"
     }
     return mensaje
 }

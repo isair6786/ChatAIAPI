@@ -7,8 +7,8 @@ import { Alert } from 'react-native';
 export async function CrearDb() {
     //console.log('creando baser')
     const db = await SQLite.openDatabaseAsync('ChatMensajesDB');
-    /*await BorrarTabla(db)
-    await BorrarTabla(db, 'CalendarsUsers')
+    //await BorrarTabla()
+    /*await BorrarTabla(db, 'CalendarsUsers')
     await BorrarTabla(db, 'CalendarsUsersData')*/
     CreateTableCalendar(db)
     CrearTabla(db)
