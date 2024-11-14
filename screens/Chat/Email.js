@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, RefreshControl } from 'react-native';
+import { View, Text, FlatList, RefreshControl,ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import Colors from '../../Constants/Colors';
 import Modal_Chat from '../../Constants/Components/Modal';
 import { getRecentEmails } from '../../services/ApiProviders';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -18,16 +19,19 @@ function formatDate(dateString) {
 export function Emails() {
     const [emails, setEmails] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [isLoading, setisLoading] = useState(true);
 
     // Función para cargar correos
     const fetchEmails = async () => {
         const emailData = await getRecentEmails();
-        const data = [...emailData[0], ...emailData[1]];
+        
+        const data = [...emailData[0], ...emailData[1]||[]];
     
         // Ordenar por fecha (descendente)
         const sortedData = data.sort((a, b) => new Date(b.receivedDateTime) - new Date(a.receivedDateTime));
     
         setEmails(sortedData);
+        setisLoading(false);
     };
 
     // Hook para cargar correos al renderizar
@@ -83,7 +87,9 @@ export function Emails() {
     };
 
     return (
+    
         <View style={{ flex: 1 }}>
+        {!isLoading?
             <FlatList
                 data={emails}
                 renderItem={({ item }) => <RenderEmailItem email={item} />}
@@ -97,6 +103,12 @@ export function Emails() {
                     />
                 }
             />
+            : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color={[Colors.Emerald.light, Colors.Cyan.light, Colors.Indigo.light]} />
+                    <Text>Cargando Correos recientes...</Text>
+                </View>
+            )}
         </View>
     );
 }

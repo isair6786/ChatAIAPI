@@ -120,7 +120,7 @@ export function Example({ render,route }) {
                 }));
                 formattedMessages.push({
                     _id: 0,
-                    text: "Hola , soy Shedzy, ¿Cómo puedo ayudarte?",
+                    text: "Hola , soy Schedzy, ¿Cómo puedo ayudarte?",
                     createdAt: adjustToCentralAmericaTime(Date.now()), // Puedes ajustar esto según tus datos
                     user: {
                         _id: 2, // Ajusta según UserKind
@@ -158,7 +158,7 @@ export function Example({ render,route }) {
                 }));
                 formattedMessages.push({
                     _id: 0,
-                    text: "Hola , soy Shedzy, ¿Cómo puedo ayudarte?",
+                    text: "Hola , soy Schedzy, ¿Cómo puedo ayudarte?",
                     createdAt: adjustToCentralAmericaTime(Date.now()), // Puedes ajustar esto según tus datos
                     user: {
                         _id: 2, // Ajusta según UserKind
@@ -262,7 +262,7 @@ export default function Asistente() {
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} setRender={setRender}/>}
         >
-        <Drawer.Screen name="Shedzy">
+        <Drawer.Screen name="Schedzy">
                 {(props) => <Example {...props} render={render} />}
         </Drawer.Screen>
         </Drawer.Navigator>

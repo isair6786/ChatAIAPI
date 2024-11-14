@@ -1,45 +1,46 @@
 {
-    "name": "Shedzy",
-    "slug": "Shedzy",
-    "scheme": "assistantui",
+  "name": "Schedzy",
+  "slug": "Schedzy",
+  "scheme": "assistantui",
+  "splash": {
+    "backgroundColor": "#ffffff"
+  },
+  "plugins": [
+    [
+      "expo-calendar",
+      {
+        "calendarPermission": "The app needs to access your calendar."
+      }
+    ]
+  ],
+  "expo": {
+    "name": "Schedzy",
+    "scheme": "Schedzy",
     "splash": {
-        "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff"
     },
-    "plugins": [
-        [
-            "expo-calendar",
-            {
-                "calendarPermission": "The app needs to access your calendar."
-            }
+    "android": {
+      "package": "com.AssistantUI.AssistantAI",
+      "android": {
+        "intentFilters": [
+          {
+            "action": "VIEW",
+            "data": [
+              {
+                "scheme": "assistantui"
+              }
+            ],
+            "category": [
+              "BROWSABLE",
+              "DEFAULT"
+            ]
+          }
         ]
-    ],
-    "expo": {
-        "name": "Shedzy",
-        "scheme": "assistantui",
-        "splash": {
-            "backgroundColor": "#ffffff"
-        },
-        "extra": {
-            "eas": {
-                "projectId": "d9995a21-062f-488f-ae0d-9e5d06cd1aee"
-            }
-        },
-        "android": {
-            "package": "com.AssistantUI.AssistantAI",
-            "android": {
-                "intentFilters": [{
-                    "action": "VIEW",
-                    "data": [{
-                        "scheme": "assistantui"
-                    }],
-                    "category": ["BROWSABLE", "DEFAULT"]
-                }]
-            },
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#FFFFFF"
-            }
-
-        }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
     }
+  }
 }
