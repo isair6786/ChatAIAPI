@@ -44,9 +44,33 @@ export async function ConsultarEventos(_date) {
 export async function getRecentEmails() {
     try {
         const response=await axios.get(API_PROVIDERS_URL + `/api/readEmailbyProvider?uid=${FIREBASE_AUTH.currentUser.uid}`);
+        //console.log(response)
         return response.data.message;  // Suponiendo que la respuesta tenga una propiedad "emails"
     } catch (error) {
         console.error("Error fetching emails: ", error);
         return [];  // Devuelve un arreglo vacío en caso de error
+    }
+}
+export async function getAccounts() {
+    try {
+        const response=await axios.get(API_PROVIDERS_URL + `/api/readCreatedToken?uid=${FIREBASE_AUTH.currentUser.uid}`);
+        return response.data.message;  // Suponiendo que la respuesta tenga una propiedad "emails"
+    } catch (error) {
+        console.error("Error fetching emails: ", error);
+        return [];  // Devuelve un arreglo vacío en caso de error
+    }
+}
+export async function MarcarCorreoComoLeido(email,emailId) {
+    const uuid = FIREBASE_AUTH.currentUser.uid
+    var data = {
+        uid:uuid,
+        email,
+        emailId
+    }
+    try {
+        const response = await axios.post(API_PROVIDERS_URL + "/api/setEmailtoRead", data);
+        return response.data
+    } catch (error) {
+        console.log(error)
     }
 }

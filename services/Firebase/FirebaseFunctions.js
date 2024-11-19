@@ -9,8 +9,8 @@ import {
     OAuthProvider,
 } from "firebase/auth";
 import { CreateDataUser } from "../database";
-import { createObjTokenProvider } from "../../Functions/Functions";
-import { GuardarToken } from "../ApiProviders";
+import { createObjTokenProvider, decryptData } from "../../Functions/Functions";
+import { getAccounts, GuardarToken } from "../ApiProviders";
 
 
 export async function LoginEmailPassword(user, password) {
@@ -25,7 +25,18 @@ export async function SignInEmailPassword(user, password) {
         user,
         password
     );
+    await CreateUsersAccounts()
     return UserLogin;
+}
+async function CreateUsersAccounts() {
+  
+    const accounts=await getAccounts();
+    //var decriptAccounts=decryptData(accounts)
+    accounts.map(async (account)=>{
+        var SignMethod = account.providerId == "google.com" ? "google" : "microsoft";
+        await CreateDataUser(account,SignMethod,false);
+    });
+
 }
 export async function LoginWithCredential(UserCredential, ProviderId, GoogleAccess = {}) {
     var UserLogin = "";
@@ -44,11 +55,7 @@ export async function LoginWithCredential(UserCredential, ProviderId, GoogleAcce
         FIREBASE_AUTH,
         credential
     );
-    //console.log("credencial",GoogleAccess)
-    /*const token = createObjTokenProvider(
-        ProviderId == "google.com" ? GoogleAccess.token._tokenResponse : UserCredential,
-        ProviderId)*/
-    //CreateDataUser(FIREBASE_AUTH.currentUser, SignMethod)
+    await CreateUsersAccounts()
     return UserLogin;
 }
 export function handleFirebaseError(error) {

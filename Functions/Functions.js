@@ -1,6 +1,7 @@
 import Colors from "../Constants/Colors";
 import { FIREBASE_AUTH } from "../services/Firebase/FirebaseConfig";
-
+import { SECRET } from "@env"
+import CryptoJS from 'crypto-js';
 export function NameSplit(name) {
     const nombre = name.split(' ')
     const nameDisplay = nombre.length > 2 ? nombre[0] + ' ' + nombre[2] : name
@@ -79,4 +80,9 @@ export const sumaRestaFecha = (_fecha, cantidad = 0) => {
 
     const fechaFormateada = `${año}-${mes}-${día}`;
     return fechaFormateada
+};
+export const decryptData = (encryptedData) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET);
+    const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(decryptedData); // Convierte el string JSON a un objeto de nuevo
 };

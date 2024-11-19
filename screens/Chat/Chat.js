@@ -70,8 +70,8 @@
              // Ocultar la tabBar en Calendario
           }} />
           <Tab.Screen name="Correos" component={EmailsView} options={{
-            headerShown: false,
-            headerTitleAlign:'center'
+            headerShown: true,
+            headerTitleAlign:'left'
              // Ocultar la tabBar en Calendario
           }} />
       </Tab.Navigator>
