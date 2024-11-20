@@ -169,7 +169,7 @@ export default function EmailsView() {
 
                 <View style={{ flex: 1 }}>
                     <Text style={{ fontWeight: 'bold' }}>Proveedor: {provider}</Text>
-                    <Text style={{ fontWeight: 'bold' }}>Cuenta: <Text style={{ fontWeight: 'normal', color: '#777' }}>{account}</Text></Text>
+                    <Text style={{ fontWeight: 'bold' }}>Asunto: <Text style={{ fontWeight: 'normal', color: '#777' }}>{Title[0]}</Text></Text>
                     <Text style={{ fontWeight: 'bold' }}>Cuerpo: <Text style={{ fontWeight: 'normal', color: '#777' }}>{body}</Text></Text>
                     <Text style={{ fontWeight: 'bold' }}>Enviado por: <Text style={{ fontWeight: 'normal', color: '#777' }}>{from}</Text></Text>
                     <Text style={{ fontWeight: 'bold' }}>Recibido el: <Text style={{ fontWeight: 'normal', color: '#777' }}>{formatDate(email.receivedDateTime)}</Text></Text>
