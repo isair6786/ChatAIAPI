@@ -42,7 +42,7 @@ const marcarMailLeido = (email, emailId, setreloadMessages) => {
                                     "Ocurrio un error al marcar el correo como leido , intente mas tarde"
                                 );
                             }
-                            setreloadMessages(true)
+                            setreloadMessages(prev=>!prev)
                         } catch (error) {
 
                             Alert.alert(

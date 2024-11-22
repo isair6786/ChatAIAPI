@@ -13,13 +13,14 @@ import PickerDefault from "../../Constants/Components/Picker";
 import { FIREBASE_AUTH } from "../../services/Firebase/FirebaseConfig";
 import { getRandomLightColor, NameSplit, obtenerSoloFechaActual } from "../../Functions/Functions";
 import { ConsultarEventos } from "../../services/ApiProviders";
-
+import EventDetailScreen from "./Event";
+import { useNavigation } from "@react-navigation/native";
 const Drawer = createDrawerNavigator();
 
 function CalendarioEventos({ render }) {
   const [events, setEvents] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigation = useNavigation()
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -47,6 +48,11 @@ function CalendarioEventos({ render }) {
     })();
   }, [render]);
 
+  const handleEvent = (event) => {
+    // Navegar a la nueva pantalla de detalles
+    navigation.navigate('EventDetail', { event});
+  };
+
   return (
     <View className="flex h-full w-full">
       <Agenda
@@ -69,7 +75,7 @@ function CalendarioEventos({ render }) {
               flexDirection: "row", // Para alinear el círculo y los textos horizontalmente
               alignItems: "center",  // Centrar verticalmente los elementos
             }}
-            onPress={() => console.log(item.id,item.provider_id,item.calendarId)}
+            onPress={() => handleEvent(item)}
           >
             {/* Círculo con inicial */}
             <View
@@ -126,7 +132,7 @@ function CalendarioEventos({ render }) {
 
 function CreateListEvents(events) {
   const formattedItems = events.reduce(
-    (acc, { startDate, title, notes, endDate, timeZone, calendarName, email, provider,id,calendarId }) => {
+    (acc, { startDate, title, notes, endDate, timeZone, calendarName, email, provider,id,calendarId,attendes}) => {
 
       // Extraemos solo la parte de la fecha de startDate (ignorando la hora)
       const eventDate = moment.tz(startDate, timeZone).format("YYYY-MM-DD");
@@ -141,12 +147,16 @@ function CreateListEvents(events) {
       // Añadimos el evento al array correspondiente a la fecha
       acc[eventDate].push({
         id,
+        startDate,
+        endDate,
         calendarId,
         account: email,
         provider_id: provider,
         calendar_name: calendarName,
         name: title,
         data: Detalles || "Sin detalles adicionales",
+        notes,
+        attendes
       });
 
       // Devolvemos el acumulador para la siguiente iteración
@@ -159,7 +169,8 @@ function CreateListEvents(events) {
 }
 /*Drawer*/
 function CustomDrawerContent({ setRender, ...props }) {
-  const nombre = NameSplit(FIREBASE_AUTH.currentUser.displayName);
+  
+  const nombre = NameSplit(FIREBASE_AUTH.currentUser.displayName||FIREBASE_AUTH.currentUser.email);
 
   return (
     <DrawerContentScrollView {...props}>
@@ -169,7 +180,7 @@ function CustomDrawerContent({ setRender, ...props }) {
             className="text-base ml-1 rounded-full h-10 w-10 text-center p-2"
             style={{ backgroundColor: 'rgb(199 210 254)' }}
           >
-            {FIREBASE_AUTH.currentUser.displayName.charAt(0).toUpperCase()}
+            {FIREBASE_AUTH.currentUser.displayName?FIREBASE_AUTH.currentUser.displayName.charAt(0).toUpperCase():FIREBASE_AUTH.currentUser.email.charAt(0).toUpperCase()}
           </Text>
           <Text className="text-base ml-2">{nombre}</Text>
         </View>
@@ -187,7 +198,7 @@ function CustomDrawerContent({ setRender, ...props }) {
 }
 export default function Calendarios() {
   const [render, setRender] = useState(false)
-
+  const navigation = useNavigation()
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} setRender={setRender} />}
@@ -195,7 +206,11 @@ export default function Calendarios() {
       <Drawer.Screen name="Agendas">
         {(props) => <CalendarioEventos {...props} render={render} />}
       </Drawer.Screen>
-
+      <Drawer.Screen name="EventDetail" options={{
+        title:"Detalles del Evento"
+      }}>
+         {(props) => <EventDetailScreen {...props} setRender={setRender} navigation={navigation} />}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 }

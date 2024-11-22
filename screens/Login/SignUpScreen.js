@@ -97,7 +97,7 @@ export default function SignUpScreen({ navigation }) {
                                 }
                             >
                                 <TextInput
-                                    placeholder='jiriko_molina@gmail.com'
+                                    placeholder='schedzy@gmail.com'
                                     onChangeText={(input) => onHandleSetEmail(input)}
                                 />
                             </Animated.View>

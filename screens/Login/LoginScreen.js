@@ -125,7 +125,7 @@ export default function LoginScreen ({navigation}) {
                 
                 >
                     <TextInput  
-                    placeholder='jiriko_molina@gmail.com' 
+                    placeholder='schedzy@gmail.com' 
                     onChangeText={(input)=>onHandleSetEmail(input)}
                     />
                 </Animated.View>
