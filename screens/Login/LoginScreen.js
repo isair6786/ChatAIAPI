@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../services/Firebase/FirebaseConfig';
 import microsoft from '../../assets/images/microsoft.png'
 import google from '../../assets/images/google.png'
-
+import error from '../../assets/adaptive-icon2.png';
 
 
 
@@ -102,14 +102,16 @@ export default function LoginScreen ({navigation}) {
  
       <View className="bg-white h-full w-full  items-center">
         <StatusBar style='light'></StatusBar>
-        <Animated.Image entering={FadeInUp.duration(1000)} className="h-[190] w-full absolute" source={require('../../assets/images/waves.png')} />
-        {/*Formulario de login*/}
+        <Animated.Image entering={FadeInUp.duration(1000)} className="h-[250] w-full absolute" source={require('../../assets/images/waves.png')} />
+       {/* Formulario de login*/}
 
         <View className="h-full w-full flex justify-center">
-            <View className='flex-row w-full justify-center pt-[250] pb-[50]'>
-                <Animated.Text entering={FadeInUp.delay(500).duration(1000)}  className='text-black font-bold tracking-wider text-5xl'>
-                    ¡Bienvenido!
-                </Animated.Text>
+            <View className='flex-row w-full justify-center pt-[180] pb-[10]'>
+                {/*<Animated.Text entering={FadeInUp.delay(500).duration(1000)}  className='text-black font-bold tracking-wider text-5xl'>
+                    <Image style={{ width: 80, height: 60 }} source={error} />
+                </Animated.Text>*/}
+                 <Animated.Image entering={FadeInUp.delay(500).duration(1000)}  className="h-[150] w-[150]" source={error} />
+     
             </View>
             <View className='flex items-left mx-4 space-y-1 '>
                 {/*Inputs*/}
@@ -145,22 +147,22 @@ export default function LoginScreen ({navigation}) {
                     <TouchableOpacity 
 
                      disabled={!IsValidForm()}
-                     className={IsValidForm()?'w-full bg-amber-400 p-5 rounded-2xl mb-3':'w-full bg-amber-100 p-5 rounded-2xl mb-3'}
+                     className={IsValidForm()?'w-full  bg-[#041b33] p-5 rounded-2xl mb-3':'w-full text-white bg-[#041b33]/[.06] p-5 rounded-2xl mb-3'}
                      onPress={() => 
                         LoginFirebase(navigation,form.email.text,form.password)
                             //navigation.navigate('Chat')
                         }>
-                        <Text className='text-black font-bold text-center '>
+                        <Text className={IsValidForm()?'text-white font-bold text-center ':'text-gray font-bold text-center '}>
                                             Ingresar
                         </Text>
                     </TouchableOpacity>
                 </Animated.View>
                 <Animated.View  entering={FadeInUp.delay(800).duration(1000)} className='flex-row justify-center'>
-                    <Text> No tienes cuenta? </Text>
+                    <Text className="font-bold"> No tienes cuenta? </Text>
                     <TouchableOpacity
                      
                      onPress={() => navigation.navigate('SignUp')}>
-                        <Text className='text-amber-600 font-bold text-center'>
+                        <Text className='text-[#08c0b0] font-bold text-center'>
                                             Registrate acá
                         </Text>
                     </TouchableOpacity>
